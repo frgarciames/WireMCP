@@ -1,5 +1,8 @@
 ![Wire-MCP Banner](Wire-MCP.png)
 
+[Add WireMCP server to Cursor](cursor://anysphere.cursor-deeplink/mcp/install?name=wiremcp&config=eyJjb21tYW5kIjoibm9kZSIsImFyZ3MiOlsiL1VzZXJzL2svRGVza3RvcC93aXJlL1dpcmVNQ1AvaW5kZXguanMiXX0=)
+<!-- This button allows one-click installation of the WireMCP server in Cursor using the MCP deeplink format. -->
+
 # WireMCP
 WireMCP is a Model Context Protocol (MCP) server designed to empower Large Language Models (LLMs) with real-time network traffic analysis capabilities. By leveraging tools built on top of Wireshark's `tshark`, WireMCP captures and processes live network data, providing LLMs with structured context to assist in tasks like threat hunting, network diagnostics, and anomaly detection.
 
