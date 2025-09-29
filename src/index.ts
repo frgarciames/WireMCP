@@ -1,8 +1,8 @@
 import cors from "cors";
-import express from "express";
-import { mcpRouter } from "./mcp";
+import express, { type Express } from "express";
+import { mcpRouter } from "./mcp.js";
 
-const app = express();
+const app: Express = express();
 const PORT = parseInt(process.env.PORT || "3001", 10);
 const HOST = process.env.HOST || "0.0.0.0";
 
@@ -25,7 +25,7 @@ app.use(express.json());
 app.get("/health", (_req, res) => {
 	res.json({
 		status: "ok",
-		server: "zylon-mcp-server",
+		server: "wireshark-mcp-server",
 		version: "1.0.0",
 	});
 });

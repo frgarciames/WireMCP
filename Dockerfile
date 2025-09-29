@@ -1,24 +1,34 @@
-# WireMCP Dockerfile - TypeScript Build
-FROM node:18-alpine AS builder
+# Build stage
+FROM node:18-alpine AS build-stage
 
-# Install build dependencies
+EXPOSE 3001
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-COPY tsconfig.json ./
+ENV PNPM_HOME="/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
 
-# Install all dependencies (including dev dependencies for build)
-RUN npm ci
+# Install corepack, copy the app, install dependencies and build the app
+RUN corepack enable
+
+# Copy package files
+COPY package.json pnpm-lock.yaml ./
+COPY tsconfig.json ./
 
 # Copy source files
 COPY src ./src
 
-# Build TypeScript
-RUN npm run build
+ENV COREPACK_INTEGRITY_KEYS=0
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
-# Production stage
-FROM node:18-alpine
+
+# Set environment variables
+ENV NODE_ENV=production \
+    PORT=3001 \
+    HOST=0.0.0.0
+
+# Build TypeScript
+RUN pnpm run build
+
 
 # Install tshark and required dependencies
 RUN apk add --no-cache \
@@ -27,18 +37,6 @@ RUN apk add --no-cache \
     bash \
     && setcap cap_net_raw,cap_net_admin=eip /usr/bin/dumpcap
 
-# Create app directory
-WORKDIR /app
-
-# Copy package files
-COPY package*.json ./
-
-# Install production dependencies only
-RUN npm ci --only=production
-
-# Copy built files from builder stage
-COPY --from=builder /app/dist ./dist
-COPY README.md ./
 
 # Create a non-root user with network capture capabilities
 RUN addgroup -S wiremcp && \
@@ -54,10 +52,12 @@ USER wiremcp
 # Expose the port for remote mode
 EXPOSE 3001
 
-# Set environment variables
-ENV NODE_ENV=production \
-    PORT=3001 \
-    HOST=0.0.0.0
+# Production stage
+FROM build-stage AS production-stage
+
+# Copy built files from builder stage
+COPY --from=build-stage /app/dist ./dist
+COPY README.md ./
 
 # Default command runs the built JavaScript
-CMD ["npm", "run", "start"]
+CMD ["pnpm", "run", "start"]

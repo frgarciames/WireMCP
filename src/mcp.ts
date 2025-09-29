@@ -4,9 +4,8 @@ import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
 import { type Request, type Response, Router } from "express";
 import { handleToolCall, toolsList } from "./tools.js";
-import z from "zod";
 
-export const mcpRouter = Router();
+export const mcpRouter: Router = Router();
 const SERVER_NAME = "wiremcp";
 const SERVER_VERSION = "1.0.0";
 
@@ -53,7 +52,7 @@ setInterval(() => {
 }, CLEANUP_INTERVAL_MS);
 
 // Create and configure a new MCP server
-function createMcpServer(transport: StreamableHTTPServerTransport): McpServer {
+function createMcpServer(): McpServer {
 	const server = new McpServer({
 		name: SERVER_NAME,
 		version: SERVER_VERSION,
@@ -134,7 +133,6 @@ mcpRouter.post("/", async (req: Request, res: Response) => {
 					});
 				},
 			});
-			console.log({ ...transport });
 
 			transport.onclose = () => {
 				if (transport.sessionId) {
@@ -143,7 +141,7 @@ mcpRouter.post("/", async (req: Request, res: Response) => {
 				}
 			};
 
-			const server = createMcpServer(transport);
+			const server = createMcpServer();
 			await server.connect(transport);
 			await transport.handleRequest(req, res, req.body);
 			return;
