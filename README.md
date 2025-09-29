@@ -1,3 +1,7 @@
+> [!WARNING]
+> This is a fork of the original [WireMCP](https://github.com/0xKoda/WireMCP) repo, and it is not maintained by the original author. This fork allows you to transform the local MCP server into a remote MCP server. Use at your own risk.
+
+
 ![Wire-MCP Banner](Wire-MCP.png)
 
 
