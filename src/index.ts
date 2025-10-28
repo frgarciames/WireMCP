@@ -15,7 +15,9 @@ app.use(
 			"authorization",
 			"content-type",
 			"mcp-session-id",
+			"mcp-protocol-version",
 		],
+		exposedHeaders: ["mcp-session-id"],
 		origin: "*",
 	}),
 );
